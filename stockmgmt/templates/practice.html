@@ -1,0 +1,88 @@
+<div class="rows"> <!--Start or row -->
+    <div class ='col-sm-2'> <!--Start of first col -->
+        <form method ='POST' action=''>{% csrf_token %}
+            {{form|crispy}}
+            <input class = "btn btn-primary mybutton" type="submit" value="Search"/>
+        </form>
+        
+    </div>
+
+
+</div>
+
+
+<a href='/add_items'> <div class='btn btn-primary' mybutton>Add Items </div></a><br><br>
+
+<a href='/list_history'> <div class='btn btn-primary' mybutton>Add Items </div></a><br><br>
+
+
+Setting a data range in django
+
+//////////// START CODE //////////////
+form = StockHistorySearchForm(request.POST)
+
+if form['start_date'].value() == "":
+
+        start_date = '2020-01-01'
+
+else:
+
+        start_date = form['start_date'].value()
+
+
+
+if form['end_date'].value() == "":
+        end_date = '2030-01-01'
+
+else:
+
+        end_date = form['end_date'].value()
+
+
+
+if request.method == 'POST':
+
+        queryset = Stock.objects.filter(category__icontains=form['category'].value(),
+
+                                    	item_name__icontains=form['item_name'].value(),
+
+                                   
+                                   
+                                            date__range=[start_date, end_date]
+
+                                        )
+
+
+//////////// END CODE //////////////
+
+
+Comparing values of two objects in django
+Entry.objects.filter(pub_date__gt=timezone.now()).select_related('blog')
+Entry.objects.exclude(pub_date__gt=timezone.now()).select_related('blog')
+
+HistoricalStock.objects.exclude (quantity__gt=form['reorder_level'].value())
+
+
+MyModel.objects.filter(date_added__gt=date_created)
+
+Authenticating user Profile
+
+def register(request):
+    form = RegistrationForm()
+    if request.method == 'POST':
+        form = RegistrationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            user.refresh_from_db()
+            user.profile.first_name = form.cleaned_data.get('first_name')
+            user.profile.last_name = form.cleaned_data.get('last_name')
+            user.profile.email = form.cleaned_data.get('email')
+            user.save()
+            username = form.cleaned_data.get('username')
+            password = form.cleaned_data.get('password1')
+            user = authenticate(username=username, password=password)
+            login(request, user)
+            return redirect('register')
+
+    else:
+        form = RegistrationForm()
